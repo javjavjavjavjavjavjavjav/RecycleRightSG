@@ -42,7 +42,9 @@
     .wrap{max-width:980px;margin:0 auto;padding:18px}
 
     .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      display:flex;
+      justify-content:center;   /* center everything */
+      text-align:center;
       padding:14px 16px;
       border:1px solid var(--border);
       background: rgba(255,255,255,.72);
@@ -51,7 +53,14 @@
       box-shadow: var(--shadow);
       position: sticky; top: 10px; z-index: 5;
     }
-    .brand{display:flex; flex-direction:column; gap:2px}
+    
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      align-items:center;       /* center brand lines */
+    }
+
     .brand .name{font-weight:850; letter-spacing:.2px; font-size:18px}
     .brand .tag{color:var(--muted); font-size:12.5px}
 
@@ -235,18 +244,25 @@
       color:var(--muted);
     }
     .qrWrap{
-      margin-top:10px;
+      margin-top:12px;
       display:flex;
       justify-content:center;
     }
     .qrImg{
-      width:170px;
-      height:170px;
+      width:240px;        /* bigger */
+      height:auto;        /* IMPORTANT: prevents stretching */
+      max-width:100%;
+      display:block;
       border-radius:16px;
       border:1px solid rgba(47,111,78,.18);
       background: rgba(255,255,255,.7);
       padding:10px;
     }
+    .qrCard{
+      padding:16px;
+    }
+
+
   </style>
 </head>
 
@@ -256,11 +272,6 @@
       <div class="brand">
         <div class="name">RecycleRight SG</div>
         <div class="tag">Correct recycling • Reduce contamination • Under 10 seconds</div>
-      </div>
-      <div class="badges">
-        <div class="badge">🚫 <b>No login</b></div>
-        <div class="badge">📵 <b>No download</b></div>
-        <div class="badge">🧾 <b>No ads</b></div>
       </div>
     </header>
 
@@ -340,7 +351,7 @@
             <li>(Optional) Photo upload for quick identification</li>
           </ul>
         </div>
-        <div class="rowItem" style="margin-top:10px;">
+        <div class="rowItem qrCard" style="margin-top:10px;">
           <h3>Scan to use RecycleRight SG</h3>
           <p class="small">Open instantly at the bin. No download needed.</p>
           <div class="qrWrap">
@@ -685,6 +696,7 @@
   </script>
 </body>
 </html>
+
 
 
 
