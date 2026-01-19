@@ -234,6 +234,19 @@
       font-size:12.5px;
       color:var(--muted);
     }
+    .qrWrap{
+      margin-top:10px;
+      display:flex;
+      justify-content:center;
+    }
+    .qrImg{
+      width:170px;
+      height:170px;
+      border-radius:16px;
+      border:1px solid rgba(47,111,78,.18);
+      background: rgba(255,255,255,.7);
+      padding:10px;
+    }
   </style>
 </head>
 
@@ -326,6 +339,13 @@
             <li>QR access at the point of disposal</li>
             <li>(Optional) Photo upload for quick identification</li>
           </ul>
+        </div>
+        <div class="rowItem" style="margin-top:10px;">
+          <h3>Scan to use RecycleRight SG</h3>
+          <p class="small">Open instantly at the bin. No download needed.</p>
+          <div class="qrWrap">
+            <img src="qrcode.png" alt="RecycleRight SG QR code" class="qrImg">
+          </div>
         </div>
       </aside>
     </main>
@@ -665,3 +685,4 @@
   </script>
 </body>
 </html>
+
