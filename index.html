@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RecycleRight SG</title>
+  <style>
+    :root{
+      /* Muted, earthy, organic palette */
+      --bg1:#f6f3ea;          /* warm sand */
+      --bg2:#e7f1ea;          /* pale mint */
+      --bg3:#d7e7dc;          /* sage */
+      --surface:#ffffffcc;    /* translucent card */
+      --surface2:#f7fbf6;     /* inner panels */
+      --text:#1c2b22;         /* deep green-black */
+      --muted:#526a5c;        /* muted green */
+      --border:rgba(28,43,34,.14);
+      --shadow: 0 14px 30px rgba(18, 30, 24, .12);
+      --radius:18px;
+
+      --accent:#2f6f4e;       /* green */
+      --accent2:#5aa173;      /* lighter green */
+      --chip:#e8f3ea;
+
+      --ok:#1f8a4c;
+      --warn:#b7791f;
+      --bad:#b33a3a;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(900px 600px at 15% 10%, var(--bg2) 0%, rgba(231,241,234,0) 60%),
+        radial-gradient(900px 600px at 85% 20%, var(--bg3) 0%, rgba(215,231,220,0) 55%),
+        linear-gradient(140deg, var(--bg1), #f2f7f2 45%, #eef6f0);
+    }
+
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky; top: 10px; z-index: 5;
+    }
+    .brand{display:flex; flex-direction:column; gap:2px}
+    .brand .name{font-weight:850; letter-spacing:.2px; font-size:18px}
+    .brand .tag{color:var(--muted); font-size:12.5px}
+
+    .badges{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .badge{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--border);
+      background: rgba(232,243,234,.75);
+      padding:7px 10px; border-radius: 999px;
+      display:flex; align-items:center; gap:6px;
+    }
+    .badge b{color:var(--text); font-weight:750}
+
+    .grid{
+      margin-top:14px;
+      display:grid; gap:14px;
+      grid-template-columns: 1.35fr .95fr;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+      .top{position:relative; top:auto}
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+
+    h2{margin:0 0 10px 0; font-size:18px}
+    p{margin:0 0 10px 0; color:var(--muted); line-height:1.45}
+
+    .sectionTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(28,43,34,.10);
+    }
+    .sectionTitle h3{margin:0; font-size:14.5px}
+    .sectionTitle span{color:var(--muted); font-size:12.5px}
+
+    .searchRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+
+    .input{
+      flex: 1 1 320px;
+      display:flex; align-items:center; gap:10px;
+      border:1px solid var(--border);
+      background: var(--surface2);
+      border-radius: 14px;
+      padding:10px 12px;
+    }
+    .input input{
+      flex:1; background:transparent; border:none; outline:none;
+      color:var(--text); font-size:15px;
+    }
+
+    .btn{
+      border:1px solid rgba(47,111,78,.25);
+      background: linear-gradient(180deg, rgba(90,161,115,.18), rgba(47,111,78,.12));
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .05s ease, filter .15s ease;
+      user-select:none;
+    }
+    .btn:hover{filter: brightness(1.02)}
+    .btn:active{transform: scale(.98)}
+    .btn.secondary{
+      border:1px solid var(--border);
+      background: rgba(232,243,234,.75);
+      font-weight:800;
+    }
+
+    .hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+    .chip{
+      border:1px solid rgba(47,111,78,.22);
+      background: rgba(232,243,234,.90);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:13px;
+      color:var(--text);
+      user-select:none;
+    }
+    .chip:hover{background: rgba(232,243,234,1)}
+
+    .result{
+      margin-top:14px;
+      border:1px solid rgba(47,111,78,.18);
+      background: rgba(247,251,246,.95);
+      border-radius: 16px;
+      padding:14px;
+      display:none;
+    }
+    .result.show{display:block}
+
+    .resultTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border-radius:999px; padding:8px 12px;
+      font-weight:900; letter-spacing:.2px;
+      border:1px solid rgba(28,43,34,.12);
+      background: rgba(255,255,255,.65);
+    }
+    .pill.ok{color: var(--ok)}
+    .pill.bad{color: var(--bad)}
+    .pill.warn{color: var(--warn)}
+
+    .small{font-size:12.5px;color:var(--muted)}
+    .itemName{font-weight:900; font-size:16px; margin:0}
+    .why{margin-top:8px; color:var(--muted)}
+    ul{margin:10px 0 0 18px; color:var(--muted)}
+    li{margin:6px 0}
+
+    .foot{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .kbd{
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      background: rgba(28,43,34,.06);
+      border:1px solid rgba(28,43,34,.10);
+      padding:2px 6px; border-radius:8px;
+      color: var(--text);
+    }
+
+    .rowItem{
+      border:1px solid rgba(47,111,78,.16);
+      background: rgba(247,251,246,.92);
+      border-radius: 16px;
+      padding:12px;
+    }
+    .rowItem h3{margin:0 0 6px 0; font-size:14.5px}
+    .rowItem ul{margin-top:6px}
+
+    /* Photo upload UI */
+    .uploadBox{
+      margin-top:10px;
+      border:1px dashed rgba(47,111,78,.30);
+      background: rgba(232,243,234,.55);
+      border-radius: 16px;
+      padding:12px;
+    }
+    .uploadRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .file{
+      flex:1 1 260px;
+      border:1px solid rgba(28,43,34,.10);
+      background: rgba(255,255,255,.75);
+      border-radius: 14px;
+      padding:10px 12px;
+    }
+    .previewWrap{
+      margin-top:10px;
+      display:none;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+    }
+    .previewWrap.show{display:flex}
+    .preview{
+      width:140px; height:140px;
+      border-radius: 16px;
+      border:1px solid rgba(28,43,34,.10);
+      background: rgba(255,255,255,.65);
+      object-fit: cover;
+    }
+    .previewMeta{min-width:200px; flex:1}
+    .note{
+      margin-top:6px;
+      font-size:12.5px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="name">RecycleRight SG</div>
+        <div class="tag">Correct recycling • Reduce contamination • Under 10 seconds</div>
+      </div>
+      <div class="badges">
+        <div class="badge">🚫 <b>No login</b></div>
+        <div class="badge">📵 <b>No download</b></div>
+        <div class="badge">🧾 <b>No ads</b></div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- LEFT -->
+      <section class="card">
+        <h2>Instant Item Checker</h2>
+        <p>Type an item (or tap a common item). Get a clear answer and quick contamination tips immediately.</p>
+
+        <div class="searchRow">
+          <div class="input" role="search">
+            🔎
+            <input id="itemInput" type="text" placeholder="e.g., plastic bottle, tissue, battery" autocomplete="off" />
+          </div>
+          <button class="btn" id="checkBtn">Check item</button>
+          <button class="btn secondary" id="clearBtn">Clear</button>
+        </div>
+
+        <div class="hint">Fast tip: press <span class="kbd">Enter</span> to check.</div>
+
+        <div class="chips" aria-label="Common items">
+          <div class="chip" data-item="Plastic bottle">Plastic bottle</div>
+          <div class="chip" data-item="Aluminium can">Aluminium can</div>
+          <div class="chip" data-item="Paper">Paper</div>
+          <div class="chip" data-item="Cardboard">Cardboard</div>
+          <div class="chip" data-item="Glass bottle">Glass bottle</div>
+          <div class="chip" data-item="Food container (dirty)">Food container (dirty)</div>
+          <div class="chip" data-item="Tissue">Tissue</div>
+          <div class="chip" data-item="Battery">Battery</div>
+          <div class="chip" data-item="Plastic bag">Plastic bag</div>
+        </div>
+
+        <!-- Photo Upload (simple) -->
+        <div class="sectionTitle">
+          <h3>Upload Photo</h3>
+          <span>works on phone + laptop</span>
+        </div>
+
+        <div class="uploadBox">
+          <div class="uploadRow">
+            <!-- capture=environment helps phones open rear camera -->
+            <input class="file" id="photoInput" type="file" accept="image/*" capture="environment" />
+            <button class="btn" id="photoCheckBtn">Identify photo</button>
+            <button class="btn secondary" id="photoClearBtn">Remove photo</button>
+          </div>
+
+          <div id="previewWrap" class="previewWrap">
+            <img id="previewImg" class="preview" alt="Uploaded preview" />
+            <div class="previewMeta">
+              <div class="small" id="photoStatus">No photo selected.</div>
+              <div class="note">
+                This demo can identify items only if you configure an AI model (optional). If not, use the text checker above.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="result" class="result" aria-live="polite"></div>
+
+        <div class="foot">
+          <div>Privacy: this page stores nothing. No accounts, no tracking.</div>
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="card">
+        <h2>Why RecycleRight SG is better</h2>
+        <p><b>Existing apps</b> often focus on locations and rewards. <b>RecycleRight SG</b> focuses on correct action and stopping contamination on-the-spot.</p>
+
+        <div class="rowItem" style="margin-top:10px;">
+          <h3>Key Features</h3>
+          <ul>
+            <li>Instant item checker (under 10 seconds)</li>
+            <li>Contamination tips in simple language</li>
+            <li>No login, no ads, no download</li>
+            <li>QR access at the point of disposal</li>
+            <li>(Optional) Photo upload for quick identification</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- OPTIONAL AI (Photo identification) -->
+  <!-- If you want real photo identification WITHOUT backend, use Teachable Machine (TensorFlow.js). -->
+  <!-- Leave these scripts as-is; they only do something if you set TM_URL below. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+  <script>
+    // =========================
+    // 1) TEXT-BASED RULES (no backend)
+    // =========================
+    const RULES = [
+      {
+        keys: ["plastic bottle", "pet bottle", "water bottle", "drink bottle"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Clean plastic bottles are recyclable.",
+        tips: ["Empty and rinse.", "No food/liquid inside.", "If very dirty, use General Waste."]
+      },
+      {
+        keys: ["aluminium can", "aluminum can", "can", "soda can"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Clean metal cans are recyclable.",
+        tips: ["Empty and rinse.", "Crush if possible (optional).", "If oily/dirty, use General Waste."]
+      },
+      {
+        keys: ["paper", "newspaper", "worksheet", "book", "magazine"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Clean, dry paper is recyclable.",
+        tips: ["Keep it dry.", "No food-stained paper.", "Tear off plastic covers if possible."]
+      },
+      {
+        keys: ["cardboard", "box", "carton"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Clean, dry cardboard is recyclable.",
+        tips: ["Flatten boxes.", "Keep it dry.", "Remove food stains—dirty parts go General Waste."]
+      },
+      {
+        keys: ["glass", "glass bottle", "glass jar"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Glass bottles/jars are recyclable when clean.",
+        tips: ["Empty and rinse.", "No ceramics/mirrors.", "If broken, wrap and dispose safely (General Waste)."]
+      },
+      {
+        keys: ["food", "leftover", "rice", "noodles"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Food waste contaminates recycling.",
+        tips: ["Don’t put food into recycling bins.", "Empty leftovers before recycling containers."]
+      },
+      {
+        keys: ["food container", "dirty container", "greasy container", "oily container"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Dirty or oily containers contaminate recycling.",
+        tips: ["If you can rinse it fully, then recycle.", "If not, use General Waste."]
+      },
+      {
+        keys: ["tissue", "napkin", "wet tissue", "wet wipes", "wipe"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Used tissues and wipes are not recyclable.",
+        tips: ["Tissues are usually contaminated after use.", "Wet wipes are not paper and contaminate recycling."]
+      },
+      {
+        keys: ["battery", "batteries", "power bank", "lithium", "aa battery"],
+        decision: "SPECIAL",
+        bin: "Special Disposal (E-waste / Battery Bin)",
+        why: "Batteries are hazardous and must not go into normal bins.",
+        tips: ["Use dedicated battery collection points.", "Do not throw into general waste or recycling."]
+      },
+      {
+        keys: ["plastic bag", "bag", "styrofoam", "foam", "polystyrene"],
+        decision: "GENERAL",
+        bin: "General Waste (unless your site has a special collection)",
+        why: "These commonly cause contamination or require special handling.",
+        tips: ["Plastic bags jam sorting machines.", "If your area has special collection, follow that guidance."]
+      }
+    ];
+
+    const input = document.getElementById("itemInput");
+    const checkBtn = document.getElementById("checkBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const resultEl = document.getElementById("result");
+
+    function normalize(s){
+      return (s || "").toLowerCase().trim().replace(/\s+/g, " ");
+    }
+
+    function matchRule(q){
+      const nq = normalize(q);
+      if (!nq) return null;
+
+      for (const r of RULES){
+        for (const k of r.keys){
+          if (nq.includes(k)) return r;
+        }
+      }
+
+      const words = nq.split(" ").filter(Boolean);
+      let best = null;
+      let bestScore = 0;
+
+      for (const r of RULES){
+        let score = 0;
+        for (const k of r.keys){
+          const kw = k.split(" ");
+          for (const w of words){
+            if (kw.includes(w) && w.length >= 3) score++;
+          }
+        }
+        if (score > bestScore){
+          bestScore = score;
+          best = r;
+        }
+      }
+      return bestScore >= 2 ? best : null;
+    }
+
+    function pill(decision){
+      if (decision === "RECYCLE") return { cls:"ok", txt:"✅ Recycle" };
+      if (decision === "GENERAL") return { cls:"bad", txt:"❌ General Waste" };
+      return { cls:"warn", txt:"⚠️ Special Disposal" };
+    }
+
+    function renderResult(item, rule, extraLine = ""){
+      const p = pill(rule.decision);
+      const safeItem = (item || "").replace(/[<>]/g, "");
+      const tips = rule.tips.map(t => `<li>${t}</li>`).join("");
+
+      resultEl.classList.add("show");
+      resultEl.innerHTML = `
+        <div class="resultTop">
+          <div>
+            <p class="itemName">Item: ${safeItem}</p>
+            <div class="small">Decision made for on-the-spot disposal (under 10 seconds).</div>
+            ${extraLine ? `<div class="small">${extraLine}</div>` : ``}
+          </div>
+          <div class="pill ${p.cls}">${p.txt}</div>
+        </div>
+
+        <div class="why"><b>Dispose in:</b> ${rule.bin}<br>
+        <span class="small">${rule.why}</span></div>
+
+        <div style="margin-top:10px;"><b>Contamination tips:</b></div>
+        <ul>${tips}</ul>
+      `;
+    }
+
+    function renderUnknown(item, extraLine = ""){
+      const safeItem = (item || "").replace(/[<>]/g, "");
+      resultEl.classList.add("show");
+      resultEl.innerHTML = `
+        <div class="resultTop">
+          <div>
+            <p class="itemName">Item: ${safeItem}</p>
+            <div class="small">Not in our quick list yet.</div>
+            ${extraLine ? `<div class="small">${extraLine}</div>` : ``}
+          </div>
+          <div class="pill warn">⚠️ Not sure</div>
+        </div>
+
+        <div class="why">
+          <b>Quick safe rule:</b> If it’s <b>clean and dry</b> (paper, cans, bottles, cardboard), it’s usually recyclable.
+          If it’s <b>dirty, wet, or food-stained</b>, use <b>General Waste</b> to avoid contamination.
+        </div>
+
+        <div style="margin-top:10px;"><b>Contamination tips:</b></div>
+        <ul>
+          <li>When in doubt, don’t contaminate the recycling bin.</li>
+          <li>Empty and rinse containers before recycling.</li>
+          <li>Keep paper/cardboard dry.</li>
+        </ul>
+      `;
+    }
+
+    function checkText(){
+      const q = input.value;
+      const nq = normalize(q);
+      if (!nq){
+        resultEl.classList.remove("show");
+        resultEl.innerHTML = "";
+        input.focus();
+        return;
+      }
+
+      const rule = matchRule(nq);
+      if (rule) renderResult(q, rule);
+      else renderUnknown(q);
+    }
+
+    function clearAll(){
+      input.value = "";
+      resultEl.classList.remove("show");
+      resultEl.innerHTML = "";
+      input.focus();
+    }
+
+    checkBtn.addEventListener("click", checkText);
+    clearBtn.addEventListener("click", clearAll);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkText();
+      if (e.key === "Escape") clearAll();
+    });
+    document.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        input.value = chip.dataset.item || "";
+        checkText();
+      });
+    });
+    window.addEventListener("load", () => input.focus());
+
+    // =========================
+    // 2) PHOTO UPLOAD (simple) + OPTIONAL AI
+    // =========================
+
+    // If you want REAL photo identification (still simple, no backend):
+    //  - Use Teachable Machine -> Image Project
+    //  - Train classes: Plastic Bottle, Aluminium Can, Paper/Cardboard, Glass, Battery, Tissue, Others
+    //  - Export TensorFlow.js model
+    //  - Paste the model folder URL below (must end with "/")
+    const TM_URL = "https://teachablemachine.withgoogle.com/models/lad93rVUN/"; // e.g. "https://teachablemachine.withgoogle.com/models/XXXXX/"
+
+    const photoInput = document.getElementById("photoInput");
+    const photoCheckBtn = document.getElementById("photoCheckBtn");
+    const photoClearBtn = document.getElementById("photoClearBtn");
+    const previewWrap = document.getElementById("previewWrap");
+    const previewImg = document.getElementById("previewImg");
+    const photoStatus = document.getElementById("photoStatus");
+
+    let tmModel = null;
+    let lastObjectURL = null;
+
+    function setPhotoStatus(msg){ photoStatus.textContent = msg; }
+
+    function clearPhoto(){
+      photoInput.value = "";
+      previewImg.src = "";
+      previewWrap.classList.remove("show");
+      if (lastObjectURL) URL.revokeObjectURL(lastObjectURL);
+      lastObjectURL = null;
+      setPhotoStatus("No photo selected.");
+    }
+
+    async function loadTM(){
+      if (!TM_URL) return null;
+      if (tmModel) return tmModel;
+      const modelURL = TM_URL + "model.json";
+      const metadataURL = TM_URL + "metadata.json";
+      tmModel = await tmImage.load(modelURL, metadataURL);
+      return tmModel;
+    }
+
+    function mapTMLabelToTextQuery(label){
+      // Map your Teachable Machine class names to our text-rule keywords
+      // (Make sure your TM classes match these names, or edit them here.)
+      const m = {
+        "Plastic Bottle": "plastic bottle",
+        "Aluminium Can": "aluminium can",
+        "Paper": "paper",
+        "Cardboard": "cardboard",
+        "Paper/Cardboard": "cardboard",
+        "Glass": "glass bottle",
+        "Battery": "battery",
+        "Tissue": "tissue",
+        "Plastic Bag": "plastic bag",
+        "Others": "others"
+      };
+      return m[label] || label.toLowerCase();
+    }
+
+    async function identifyPhoto(){
+      const file = photoInput.files && photoInput.files[0];
+      if (!file){
+        setPhotoStatus("Please choose a photo first.");
+        return;
+      }
+
+      // If no AI configured, we can’t truly “identify” automatically.
+      if (!TM_URL){
+        setPhotoStatus("AI model not configured. Use the text checker above, or set TM_URL for photo identification.");
+        renderUnknown("Uploaded photo", "Tip: Configure Teachable Machine model to auto-identify photos.");
+        return;
+      }
+
+      try{
+        setPhotoStatus("Loading model...");
+        const model = await loadTM();
+
+        setPhotoStatus("Identifying...");
+        const preds = await model.predict(previewImg);
+        preds.sort((a,b) => b.probability - a.probability);
+        const top = preds[0];
+
+        const label = top.className;
+        const conf = Math.round(top.probability * 100);
+
+        const query = mapTMLabelToTextQuery(label);
+        const rule = matchRule(query);
+
+        if (rule){
+          renderResult(label, rule, `Photo AI confidence: ${conf}% • Confirm using your judgment.`);
+        } else {
+          renderUnknown(label, `Photo AI confidence: ${conf}% • If unsure, use General Waste to avoid contamination.`);
+        }
+
+        setPhotoStatus(`AI suggests: ${label} (${conf}%).`);
+      }catch(err){
+        setPhotoStatus("Could not run photo AI. Check TM_URL and internet access.");
+        renderUnknown("Uploaded photo", "AI error occurred. Use text checker instead.");
+      }
+    }
+
+    photoInput.addEventListener("change", () => {
+      const file = photoInput.files && photoInput.files[0];
+      if (!file){
+        clearPhoto();
+        return;
+      }
+      if (lastObjectURL) URL.revokeObjectURL(lastObjectURL);
+      lastObjectURL = URL.createObjectURL(file);
+      previewImg.src = lastObjectURL;
+      previewWrap.classList.add("show");
+      setPhotoStatus("Photo ready. Click “Identify photo”.");
+    });
+
+    photoCheckBtn.addEventListener("click", identifyPhoto);
+    photoClearBtn.addEventListener("click", clearPhoto);
+  </script>
+</body>
+</html>
