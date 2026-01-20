@@ -336,6 +336,12 @@
       border:1px solid rgba(28,43,34,.12);
       background: rgba(255,255,255,.7);
     }
+    .leftCol{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
     .tagChat{ color: var(--accent); }
     .tagComplain{ color: var(--bad); }
     .postMsg{ color: var(--text); line-height:1.35; }
@@ -367,6 +373,7 @@
 
     <main class="grid">
       <!-- COMMUNITY FORUM (separate card) -->
+    <div class="leftCol">
       <aside class="card" id="forumCard">
         <h2>Community Forum</h2>
         <p>Chat or report issues</p>
@@ -406,10 +413,11 @@
       
         <div id="binOut" class="binOut"></div>
       </aside>
+    </div>
 
 
       <!-- MAIN -->
-      <section class="card">
+      <section class="card" id="mainCard">
         <h2>Instant Item Checker</h2>
         <p>Type an item (or tap a common item). Get a clear answer and quick contamination tips immediately.</p>
 
@@ -480,7 +488,7 @@
       </section>
 
       <!-- RIGHT -->
-      <aside class="card">
+      <aside class="card" id="whyCard">
         <h2>Why RecycleRight SG is better</h2>
         <p><b>Existing apps</b> often focus on locations and rewards. <b>RecycleRight SG</b> focuses on correct action and stopping contamination on-the-spot.</p>
 
@@ -1048,5 +1056,6 @@
   </script>
 </body>
 </html>
+
 
 
