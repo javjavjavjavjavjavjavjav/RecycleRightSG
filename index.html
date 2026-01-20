@@ -78,9 +78,8 @@
     
       /* Tell the 4 main sections what order to appear */
       #mainCard{ order: 1; }
-      #forumCard{ order: 2; }
+      #leftCol{ order: 2; }
       #whyCard{ order: 3; }
-      #binsCard{ order: 4; }
     }
 
 
@@ -347,6 +346,9 @@
     .postMsg{ color: var(--text); line-height:1.35; }
     .postMeta{ color: var(--muted); font-size:12px; }
 
+    .chips{ align-items:flex-start; }
+
+
     /* Bin finder */
     .miniRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center; }
     .miniRow .field{ flex:1 1 140px; min-width: 140px; }
@@ -373,7 +375,7 @@
 
     <main class="grid">
       <!-- COMMUNITY FORUM (separate card) -->
-    <div class="leftCol">
+    <div class="leftCol" id="leftCol">
       <aside class="card" id="forumCard">
         <h2>Community Forum</h2>
         <p>Chat or report issues</p>
@@ -433,7 +435,6 @@
         <div class="hint">Fast tip: press <span class="kbd">Enter</span> to check.</div>
 
         <div class="chips" aria-label="Common items">
-          <div id="textResult" class="result" aria-live="polite"></div>
           <div class="chip" data-item="Plastic bottle">Plastic bottle</div>
           <div class="chip" data-item="Aluminium can">Aluminium can</div>
           <div class="chip" data-item="Paper">Paper</div>
@@ -449,6 +450,10 @@
           <div class="chip" data-item="Styrofoam">Styrofoam</div>
           <div class="chip" data-item="Coffee cup">Coffee cup</div>
         </div>
+        
+        <!-- Result prints right below the item checker -->
+        <div id="textResult" class="result" aria-live="polite"></div>
+
 
         <!-- Photo Upload -->
         <div class="sectionTitle">
@@ -752,24 +757,27 @@
     function checkText(){
       const q = input.value;
       const nq = normalize(q);
+    
       if (!nq){
-        resultEl.classList.remove("show");
-        resultEl.innerHTML = "";
+        textResultEl.classList.remove("show");
+        textResultEl.innerHTML = "";
         input.focus();
         return;
       }
-
+    
       const rule = matchRule(nq);
       if (rule) renderResult(textResultEl, q, rule);
       else renderUnknown(textResultEl, q);
     }
 
+
     function clearAll(){
       input.value = "";
-      textresultEl.classList.remove("show");
-      textresultEl.innerHTML = "";
+      textResultEl.classList.remove("show");
+      textResultEl.innerHTML = "";
       input.focus();
     }
+
 
     checkBtn.addEventListener("click", checkText);
     clearBtn.addEventListener("click", clearAll);
@@ -1061,6 +1069,7 @@
   </script>
 </body>
 </html>
+
 
 
 
