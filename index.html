@@ -70,10 +70,19 @@
       grid-template-columns: .85fr 1.35fr .95fr;
       align-items:start;
     }
+
+
+    /* Mobile order + split cards */
     @media (max-width: 1050px){
-      .grid{grid-template-columns:1fr}
-      .top{position:relative; top:auto}
+      .grid{ grid-template-columns: 1fr; }
+    
+      /* Tell the 4 main sections what order to appear */
+      #mainCard{ order: 1; }
+      #forumCard{ order: 2; }
+      #whyCard{ order: 3; }
+      #binsCard{ order: 4; }
     }
+
 
     .card{
       border:1px solid var(--border);
@@ -357,11 +366,11 @@
     </header>
 
     <main class="grid">
-      <!-- LEFT SIDEBAR -->
-      <aside class="card">
+      <!-- COMMUNITY FORUM (separate card) -->
+      <aside class="card" id="forumCard">
         <h2>Community Forum</h2>
         <p>Chat or report issues</p>
-
+      
         <div class="miniRow" style="margin-top:6px;">
           <select id="forumType" class="field" aria-label="Post type">
             <option value="chat">Chat</option>
@@ -369,31 +378,35 @@
           </select>
           <input id="forumName" class="field" type="text" placeholder="Name (optional)" maxlength="20" />
         </div>
-
+      
         <div style="margin-top:10px;">
           <textarea id="forumMsg" class="field" placeholder="Type your message..." maxlength="240"></textarea>
         </div>
-
+      
         <div class="miniRow">
           <button class="btn" id="postBtn">Post</button>
           <button class="btn secondary" id="clearPostsBtn">Clear posts</button>
         </div>
-
+      
         <div class="forumList" id="forumList" aria-live="polite"></div>
-
-        <div class="sectionTitle">
-          <h3>Nearest Recycling Bins</h3>
-        </div>
-
-        <p class="small" style="margin-top:8px;">Enter a Singapore postal code (6 digits). We estimate region + nearby bins.</p>
-
+      </aside>
+      
+      <!-- NEAREST RECYCLING BINS (separate card) -->
+      <aside class="card" id="binsCard">
+        <h2>Nearest Recycling Bins</h2>
+      
+        <p class="small" style="margin-top:8px;">
+          Enter a Singapore postal code (6 digits). We estimate region + nearby bins.
+        </p>
+      
         <div class="miniRow">
           <input id="postalInput" class="field" type="text" inputmode="numeric" placeholder="e.g. 520123" maxlength="6" />
           <button class="btn" id="postalBtn">Find</button>
         </div>
-
+      
         <div id="binOut" class="binOut"></div>
       </aside>
+
 
       <!-- MAIN -->
       <section class="card">
@@ -1035,4 +1048,5 @@
   </script>
 </body>
 </html>
+
 
