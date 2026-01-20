@@ -433,6 +433,7 @@
         <div class="hint">Fast tip: press <span class="kbd">Enter</span> to check.</div>
 
         <div class="chips" aria-label="Common items">
+          <div id="textResult" class="result" aria-live="polite"></div>
           <div class="chip" data-item="Plastic bottle">Plastic bottle</div>
           <div class="chip" data-item="Aluminium can">Aluminium can</div>
           <div class="chip" data-item="Paper">Paper</div>
@@ -480,7 +481,7 @@
           </div>
         </div>
 
-        <div id="result" class="result" aria-live="polite"></div>
+        <div id="photoResult" class="result" aria-live="polite"></div>
 
         <div class="foot">
           <div>Privacy: this page stores nothing. No accounts, no tracking.</div>
@@ -646,7 +647,9 @@
     const input = document.getElementById("itemInput");
     const checkBtn = document.getElementById("checkBtn");
     const clearBtn = document.getElementById("clearBtn");
-    const resultEl = document.getElementById("result");
+    const textResultEl = document.getElementById("textResult");
+    const photoResultEl = document.getElementById("photoResult");
+
 
     function normalize(s){
       return (s || "").toLowerCase().trim().replace(/\s+/g, " ");
@@ -691,50 +694,51 @@
 
     function esc(s){ return (s || "").replace(/[<>]/g, ""); }
 
-    function renderResult(item, rule, extraLine = ""){
+    function renderResult(targetEl, item, rule, extraLine = ""){
       const d = decisionStyle(rule.decision);
       const safeItem = esc(item);
       const tips = rule.tips.map(t => `<li>${esc(t)}</li>`).join("");
-
-      resultEl.classList.add("show");
-      resultEl.innerHTML = `
+    
+      targetEl.classList.add("show");
+      targetEl.innerHTML = `
         <div class="decisionBanner ${d.cls}">
           <div class="decisionText ${d.cls}">${d.txt}</div>
           <div class="decisionBadge">${d.badge}</div>
         </div>
-
+    
         <p class="itemName">Item: ${safeItem}</p>
         <div class="small">Decision made for on-the-spot disposal (under 10 seconds).</div>
         ${extraLine ? `<div class="small">${esc(extraLine)}</div>` : ``}
-
+    
         <div class="why" style="margin-top:10px;">
           <b>Dispose in:</b> ${esc(rule.bin)}<br>
           <span class="small">${esc(rule.why)}</span>
         </div>
-
+    
         <div style="margin-top:10px;"><b>Contamination tips:</b></div>
         <ul>${tips}</ul>
       `;
     }
-
-    function renderUnknown(item, extraLine = ""){
+    
+    function renderUnknown(targetEl, item, extraLine = ""){
       const safeItem = esc(item);
-      resultEl.classList.add("show");
-      resultEl.innerHTML = `
+    
+      targetEl.classList.add("show");
+      targetEl.innerHTML = `
         <div class="decisionBanner warn">
           <div class="decisionText warn">⚠️ NOT SURE</div>
           <div class="decisionBadge">Avoid contamination</div>
         </div>
-
+    
         <p class="itemName">Item: ${safeItem}</p>
         <div class="small">Not in our quick list yet.</div>
         ${extraLine ? `<div class="small">${esc(extraLine)}</div>` : ``}
-
+    
         <div class="why" style="margin-top:10px;">
           <b>Quick safe rule:</b> If it’s <b>clean and dry</b> (paper, cans, bottles, cardboard), it’s usually recyclable.
           If it’s <b>dirty, wet, or food-stained</b>, use <b>General Waste</b> to avoid contamination.
         </div>
-
+    
         <div style="margin-top:10px;"><b>Contamination tips:</b></div>
         <ul>
           <li>When in doubt, don’t contaminate the recycling bin.</li>
@@ -743,6 +747,7 @@
         </ul>
       `;
     }
+
 
     function checkText(){
       const q = input.value;
@@ -755,14 +760,14 @@
       }
 
       const rule = matchRule(nq);
-      if (rule) renderResult(q, rule);
-      else renderUnknown(q);
+      if (rule) renderResult(textResultEl, q, rule);
+      else renderUnknown(textResultEl, q);
     }
 
     function clearAll(){
       input.value = "";
-      resultEl.classList.remove("show");
-      resultEl.innerHTML = "";
+      textresultEl.classList.remove("show");
+      textresultEl.innerHTML = "";
       input.focus();
     }
 
@@ -863,9 +868,9 @@
         const rule = matchRule(query);
 
         if (rule){
-          renderResult(label, rule, `Photo AI confidence: ${conf}% • Please confirm.`);
+          renderResult(photoResultEl, label, rule, `Photo AI confidence: ${conf}% • Please confirm.`);
         } else {
-          renderUnknown(label, `Photo AI confidence: ${conf}% • If unsure, use General Waste to avoid contamination.`);
+          renderUnknown(photoResultEl, label, `Photo AI confidence: ${conf}% • If unsure, use General Waste to avoid contamination.`);
         }
 
         setPhotoStatus(`AI suggests: ${label} (${conf}%).`);
@@ -1056,6 +1061,7 @@
   </script>
 </body>
 </html>
+
 
 
 
