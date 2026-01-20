@@ -6,20 +6,19 @@
   <title>RecycleRight SG</title>
   <style>
     :root{
-      /* Muted, earthy, organic palette */
-      --bg1:#f6f3ea;          /* warm sand */
-      --bg2:#e7f1ea;          /* pale mint */
-      --bg3:#d7e7dc;          /* sage */
-      --surface:#ffffffcc;    /* translucent card */
-      --surface2:#f7fbf6;     /* inner panels */
-      --text:#1c2b22;         /* deep green-black */
-      --muted:#526a5c;        /* muted green */
+      --bg1:#f6f3ea;
+      --bg2:#e7f1ea;
+      --bg3:#d7e7dc;
+      --surface:#ffffffcc;
+      --surface2:#f7fbf6;
+      --text:#1c2b22;
+      --muted:#526a5c;
       --border:rgba(28,43,34,.14);
       --shadow: 0 14px 30px rgba(18, 30, 24, .12);
       --radius:18px;
 
-      --accent:#2f6f4e;       /* green */
-      --accent2:#5aa173;      /* lighter green */
+      --accent:#2f6f4e;
+      --accent2:#5aa173;
       --chip:#e8f3ea;
 
       --ok:#1f8a4c;
@@ -39,11 +38,11 @@
         linear-gradient(140deg, var(--bg1), #f2f7f2 45%, #eef6f0);
     }
 
-    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px}
 
     .top{
       display:flex;
-      justify-content:center;   /* center everything */
+      justify-content:center;
       text-align:center;
       padding:14px 16px;
       border:1px solid var(--border);
@@ -53,33 +52,25 @@
       box-shadow: var(--shadow);
       position: sticky; top: 10px; z-index: 5;
     }
-    
+
     .brand{
       display:flex;
       flex-direction:column;
       gap:2px;
-      align-items:center;       /* center brand lines */
+      align-items:center;
     }
 
     .brand .name{font-weight:850; letter-spacing:.2px; font-size:18px}
     .brand .tag{color:var(--muted); font-size:12.5px}
 
-    .badges{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-    .badge{
-      font-size:12px; color:var(--muted);
-      border:1px solid var(--border);
-      background: rgba(232,243,234,.75);
-      padding:7px 10px; border-radius: 999px;
-      display:flex; align-items:center; gap:6px;
-    }
-    .badge b{color:var(--text); font-weight:750}
-
+    /* 3-column layout (Forum | Main | Right) */
     .grid{
       margin-top:14px;
       display:grid; gap:14px;
-      grid-template-columns: 1.35fr .95fr;
+      grid-template-columns: .85fr 1.35fr .95fr;
+      align-items:start;
     }
-    @media (max-width: 900px){
+    @media (max-width: 1050px){
       .grid{grid-template-columns:1fr}
       .top{position:relative; top:auto}
     }
@@ -130,6 +121,8 @@
       cursor:pointer;
       transition: transform .05s ease, filter .15s ease;
       user-select:none;
+      display:inline-flex; align-items:center; gap:8px;
+      text-decoration:none;
     }
     .btn:hover{filter: brightness(1.02)}
     .btn:active{transform: scale(.98)}
@@ -164,19 +157,38 @@
     }
     .result.show{display:block}
 
-    .resultTop{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    /* BIG decision banner */
+    .decisionBanner{
+      border-radius: 16px;
+      padding: 12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border: 1px solid rgba(28,43,34,.12);
+      background: rgba(255,255,255,.7);
+      margin-bottom: 12px;
     }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      border-radius:999px; padding:8px 12px;
-      font-weight:900; letter-spacing:.2px;
-      border:1px solid rgba(28,43,34,.12);
-      background: rgba(255,255,255,.65);
+    .decisionText{
+      font-weight:1000;
+      letter-spacing:.4px;
+      font-size:18px;
     }
-    .pill.ok{color: var(--ok)}
-    .pill.bad{color: var(--bad)}
-    .pill.warn{color: var(--warn)}
+    .decisionBadge{
+      font-weight:1000;
+      font-size:12px;
+      border-radius:999px;
+      padding:8px 12px;
+      border: 1px solid rgba(28,43,34,.12);
+      background: rgba(255,255,255,.75);
+      white-space:nowrap;
+    }
+    .decisionBanner.ok{ outline: 3px solid rgba(31,138,76,.18); }
+    .decisionBanner.bad{ outline: 3px solid rgba(179,58,58,.18); }
+    .decisionBanner.warn{ outline: 3px solid rgba(183,121,31,.18); }
+    .decisionText.ok{color: var(--ok)}
+    .decisionText.bad{color: var(--bad)}
+    .decisionText.warn{color: var(--warn)}
 
     .small{font-size:12.5px;color:var(--muted)}
     .itemName{font-weight:900; font-size:16px; margin:0}
@@ -215,13 +227,25 @@
       padding:12px;
     }
     .uploadRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .file{
-      flex:1 1 260px;
-      border:1px solid rgba(28,43,34,.10);
-      background: rgba(255,255,255,.75);
-      border-radius: 14px;
-      padding:10px 12px;
+
+    /* hide real file input */
+    .fileHidden{
+      position:absolute;
+      left:-9999px;
+      width:1px;height:1px;opacity:0;
     }
+
+    .fileMeta{
+      font-size:12.5px;
+      color:var(--muted);
+      padding:8px 10px;
+      border:1px solid rgba(28,43,34,.10);
+      background: rgba(255,255,255,.65);
+      border-radius: 12px;
+      flex: 1 1 210px;
+      min-width: 210px;
+    }
+
     .previewWrap{
       margin-top:10px;
       display:none;
@@ -243,14 +267,15 @@
       font-size:12.5px;
       color:var(--muted);
     }
+
     .qrWrap{
       margin-top:12px;
       display:flex;
       justify-content:center;
     }
     .qrImg{
-      width:240px;        /* bigger */
-      height:auto;        /* IMPORTANT: prevents stretching */
+      width:240px;
+      height:auto;
       max-width:100%;
       display:block;
       border-radius:16px;
@@ -258,11 +283,67 @@
       background: rgba(255,255,255,.7);
       padding:10px;
     }
-    .qrCard{
-      padding:16px;
+    .qrCard{ padding:16px; }
+
+    /* Forum */
+    .field{
+      width:100%;
+      border:1px solid rgba(28,43,34,.10);
+      background: rgba(255,255,255,.75);
+      border-radius: 14px;
+      padding:10px 12px;
+      outline:none;
+      font-size:14px;
+      color:var(--text);
     }
+    textarea.field{ min-height:90px; resize:vertical; }
+    .forumList{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:320px;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .post{
+      border:1px solid rgba(47,111,78,.16);
+      background: rgba(247,251,246,.92);
+      border-radius: 16px;
+      padding:10px;
+    }
+    .postTop{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+    .tagPill{
+      font-size:12px;
+      font-weight:900;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid rgba(28,43,34,.12);
+      background: rgba(255,255,255,.7);
+    }
+    .tagChat{ color: var(--accent); }
+    .tagComplain{ color: var(--bad); }
+    .postMsg{ color: var(--text); line-height:1.35; }
+    .postMeta{ color: var(--muted); font-size:12px; }
 
-
+    /* Bin finder */
+    .miniRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center; }
+    .miniRow .field{ flex:1 1 140px; min-width: 140px; }
+    .binOut{
+      margin-top:10px;
+      border:1px solid rgba(47,111,78,.16);
+      background: rgba(247,251,246,.92);
+      border-radius: 16px;
+      padding:12px;
+      display:none;
+    }
+    .binOut.show{ display:block; }
   </style>
 </head>
 
@@ -276,7 +357,45 @@
     </header>
 
     <main class="grid">
-      <!-- LEFT -->
+      <!-- LEFT SIDEBAR -->
+      <aside class="card">
+        <h2>Community Forum</h2>
+        <p>Chat or report issues</p>
+
+        <div class="miniRow" style="margin-top:6px;">
+          <select id="forumType" class="field" aria-label="Post type">
+            <option value="chat">Chat</option>
+            <option value="complaint">Complaint</option>
+          </select>
+          <input id="forumName" class="field" type="text" placeholder="Name (optional)" maxlength="20" />
+        </div>
+
+        <div style="margin-top:10px;">
+          <textarea id="forumMsg" class="field" placeholder="Type your message..." maxlength="240"></textarea>
+        </div>
+
+        <div class="miniRow">
+          <button class="btn" id="postBtn">Post</button>
+          <button class="btn secondary" id="clearPostsBtn">Clear posts</button>
+        </div>
+
+        <div class="forumList" id="forumList" aria-live="polite"></div>
+
+        <div class="sectionTitle">
+          <h3>Nearest Recycling Bins</h3>
+        </div>
+
+        <p class="small" style="margin-top:8px;">Enter a Singapore postal code (6 digits). We estimate region + nearby bins.</p>
+
+        <div class="miniRow">
+          <input id="postalInput" class="field" type="text" inputmode="numeric" placeholder="e.g. 520123" maxlength="6" />
+          <button class="btn" id="postalBtn">Find</button>
+        </div>
+
+        <div id="binOut" class="binOut"></div>
+      </aside>
+
+      <!-- MAIN -->
       <section class="card">
         <h2>Instant Item Checker</h2>
         <p>Type an item (or tap a common item). Get a clear answer and quick contamination tips immediately.</p>
@@ -284,7 +403,7 @@
         <div class="searchRow">
           <div class="input" role="search">
             🔎
-            <input id="itemInput" type="text" placeholder="e.g., plastic bottle, tissue, battery" autocomplete="off" />
+            <input id="itemInput" type="text" placeholder="e.g., plastic bottle, plastic straw, battery" autocomplete="off" />
           </div>
           <button class="btn" id="checkBtn">Check item</button>
           <button class="btn secondary" id="clearBtn">Clear</button>
@@ -299,12 +418,17 @@
           <div class="chip" data-item="Cardboard">Cardboard</div>
           <div class="chip" data-item="Glass bottle">Glass bottle</div>
           <div class="chip" data-item="Food container (dirty)">Food container (dirty)</div>
+          <div class="chip" data-item="Food container (clean)">Food container (clean)</div>
           <div class="chip" data-item="Tissue">Tissue</div>
           <div class="chip" data-item="Battery">Battery</div>
           <div class="chip" data-item="Plastic bag">Plastic bag</div>
+          <div class="chip" data-item="Plastic straw">Plastic straw</div>
+          <div class="chip" data-item="Plastic cutlery">Plastic cutlery</div>
+          <div class="chip" data-item="Styrofoam">Styrofoam</div>
+          <div class="chip" data-item="Coffee cup">Coffee cup</div>
         </div>
 
-        <!-- Photo Upload (simple) -->
+        <!-- Photo Upload -->
         <div class="sectionTitle">
           <h3>Upload Photo</h3>
           <span>works on phone + laptop</span>
@@ -312,8 +436,14 @@
 
         <div class="uploadBox">
           <div class="uploadRow">
-            <!-- capture=environment helps phones open rear camera -->
-            <input class="file" id="photoInput" type="file" accept="image/*" capture="environment" />
+            <input class="fileHidden" id="photoInput" type="file" accept="image/*" capture="environment" />
+
+            <!-- custom label button -->
+            <label class="btn" for="photoInput">📷 Take/Upload Photo</label>
+
+            <!-- shows file name -->
+            <div class="fileMeta" id="fileMeta">No photo selected.</div>
+
             <button class="btn" id="photoCheckBtn">Identify photo</button>
             <button class="btn secondary" id="photoClearBtn">Remove photo</button>
           </div>
@@ -323,7 +453,7 @@
             <div class="previewMeta">
               <div class="small" id="photoStatus">No photo selected.</div>
               <div class="note">
-                This demo can identify items only if you configure an AI model (optional). If not, use the text checker above.
+                Photo AI is optional (Teachable Machine). If unsure, use the text checker.
               </div>
             </div>
           </div>
@@ -348,9 +478,11 @@
             <li>Contamination tips in simple language</li>
             <li>No login, no ads, no download</li>
             <li>QR access at the point of disposal</li>
-            <li>(Optional) Photo upload for quick identification</li>
+            <li>Photo upload for quick identification</li>
+            <li>Community forum + bin locator (demo)</li>
           </ul>
         </div>
+
         <div class="rowItem qrCard" style="margin-top:10px;">
           <h3>Scan to use RecycleRight SG</h3>
           <p class="small">Open instantly at the bin. No download needed.</p>
@@ -363,8 +495,6 @@
   </div>
 
   <!-- OPTIONAL AI (Photo identification) -->
-  <!-- If you want real photo identification WITHOUT backend, use Teachable Machine (TensorFlow.js). -->
-  <!-- Leave these scripts as-is; they only do something if you set TM_URL below. -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 
@@ -373,6 +503,7 @@
     // 1) TEXT-BASED RULES (no backend)
     // =========================
     const RULES = [
+      // Recyclables
       {
         keys: ["plastic bottle", "pet bottle", "water bottle", "drink bottle"],
         decision: "RECYCLE",
@@ -381,7 +512,7 @@
         tips: ["Empty and rinse.", "No food/liquid inside.", "If very dirty, use General Waste."]
       },
       {
-        keys: ["aluminium can", "aluminum can", "can", "soda can"],
+        keys: ["aluminium can", "aluminum can", "can", "soda can", "beer can"],
         decision: "RECYCLE",
         bin: "Recycling (Blue Bin)",
         why: "Clean metal cans are recyclable.",
@@ -392,14 +523,14 @@
         decision: "RECYCLE",
         bin: "Recycling (Blue Bin)",
         why: "Clean, dry paper is recyclable.",
-        tips: ["Keep it dry.", "No food-stained paper.", "Tear off plastic covers if possible."]
+        tips: ["Keep it dry.", "No food-stained paper.", "Remove plastic covers if possible."]
       },
       {
-        keys: ["cardboard", "box", "carton"],
+        keys: ["cardboard", "box", "carton box", "shipping box"],
         decision: "RECYCLE",
         bin: "Recycling (Blue Bin)",
         why: "Clean, dry cardboard is recyclable.",
-        tips: ["Flatten boxes.", "Keep it dry.", "Remove food stains—dirty parts go General Waste."]
+        tips: ["Flatten boxes.", "Keep it dry.", "Dirty parts go General Waste."]
       },
       {
         keys: ["glass", "glass bottle", "glass jar"],
@@ -409,6 +540,22 @@
         tips: ["Empty and rinse.", "No ceramics/mirrors.", "If broken, wrap and dispose safely (General Waste)."]
       },
       {
+        keys: ["milk carton", "drink carton", "tetra pak", "tetrapak", "juice carton"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Beverage cartons can be recycled if emptied and rinsed.",
+        tips: ["Empty and rinse.", "Flatten if possible.", "If heavily contaminated, use General Waste."]
+      },
+      {
+        keys: ["food container (clean)", "clean container", "rinsed container", "takeaway container (clean)", "plastic container (clean)"],
+        decision: "RECYCLE",
+        bin: "Recycling (Blue Bin)",
+        why: "Clean rigid plastic containers are usually recyclable.",
+        tips: ["Empty and rinse fully.", "If oily/greasy, use General Waste.", "Remove leftover food."]
+      },
+
+      // Not recyclable / General waste
+      {
         keys: ["food", "leftover", "rice", "noodles"],
         decision: "GENERAL",
         bin: "General Waste",
@@ -416,7 +563,7 @@
         tips: ["Don’t put food into recycling bins.", "Empty leftovers before recycling containers."]
       },
       {
-        keys: ["food container", "dirty container", "greasy container", "oily container"],
+        keys: ["food container", "dirty container", "greasy container", "oily container", "takeaway container (dirty)"],
         decision: "GENERAL",
         bin: "General Waste",
         why: "Dirty or oily containers contaminate recycling.",
@@ -430,18 +577,48 @@
         tips: ["Tissues are usually contaminated after use.", "Wet wipes are not paper and contaminate recycling."]
       },
       {
+        keys: ["plastic bag", "bag"],
+        decision: "GENERAL",
+        bin: "General Waste (unless special collection exists)",
+        why: "Plastic bags jam sorting machines and often contaminate recycling streams.",
+        tips: ["Do not place in blue bins.", "Use special collection only if your area has it."]
+      },
+      {
+        keys: ["plastic straw", "straw"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Straws are small, easily contaminated, and commonly not accepted in mixed recycling.",
+        tips: ["Dispose as General Waste.", "If possible, avoid single-use straws."]
+      },
+      {
+        keys: ["plastic cutlery", "fork", "spoon", "knife"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Small plastic cutlery is often contaminated and not sorted effectively.",
+        tips: ["Dispose as General Waste.", "If reusable, wash and reuse instead."]
+      },
+      {
+        keys: ["styrofoam", "foam", "polystyrene"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Foam items are typically not accepted in mixed recycling.",
+        tips: ["Dispose as General Waste.", "Avoid foam packaging if possible."]
+      },
+      {
+        keys: ["coffee cup", "paper cup", "disposable cup"],
+        decision: "GENERAL",
+        bin: "General Waste",
+        why: "Disposable cups often have plastic lining and liquid contamination.",
+        tips: ["Dispose as General Waste.", "Use a reusable cup when possible."]
+      },
+
+      // Special
+      {
         keys: ["battery", "batteries", "power bank", "lithium", "aa battery"],
         decision: "SPECIAL",
         bin: "Special Disposal (E-waste / Battery Bin)",
         why: "Batteries are hazardous and must not go into normal bins.",
         tips: ["Use dedicated battery collection points.", "Do not throw into general waste or recycling."]
-      },
-      {
-        keys: ["plastic bag", "bag", "styrofoam", "foam", "polystyrene"],
-        decision: "GENERAL",
-        bin: "General Waste (unless your site has a special collection)",
-        why: "These commonly cause contamination or require special handling.",
-        tips: ["Plastic bags jam sorting machines.", "If your area has special collection, follow that guidance."]
       }
     ];
 
@@ -464,6 +641,7 @@
         }
       }
 
+      // fuzzy-ish match
       const words = nq.split(" ").filter(Boolean);
       let best = null;
       let bestScore = 0;
@@ -484,30 +662,34 @@
       return bestScore >= 2 ? best : null;
     }
 
-    function pill(decision){
-      if (decision === "RECYCLE") return { cls:"ok", txt:"✅ Recycle" };
-      if (decision === "GENERAL") return { cls:"bad", txt:"❌ General Waste" };
-      return { cls:"warn", txt:"⚠️ Special Disposal" };
+    function decisionStyle(decision){
+      if (decision === "RECYCLE") return { cls:"ok", txt:"✅ RECYCLE", badge:"Blue Bin" };
+      if (decision === "GENERAL") return { cls:"bad", txt:"❌ GENERAL WASTE", badge:"Black/General Bin" };
+      return { cls:"warn", txt:"⚠️ SPECIAL DISPOSAL", badge:"E-waste / Battery Bin" };
     }
 
+    function esc(s){ return (s || "").replace(/[<>]/g, ""); }
+
     function renderResult(item, rule, extraLine = ""){
-      const p = pill(rule.decision);
-      const safeItem = (item || "").replace(/[<>]/g, "");
-      const tips = rule.tips.map(t => `<li>${t}</li>`).join("");
+      const d = decisionStyle(rule.decision);
+      const safeItem = esc(item);
+      const tips = rule.tips.map(t => `<li>${esc(t)}</li>`).join("");
 
       resultEl.classList.add("show");
       resultEl.innerHTML = `
-        <div class="resultTop">
-          <div>
-            <p class="itemName">Item: ${safeItem}</p>
-            <div class="small">Decision made for on-the-spot disposal (under 10 seconds).</div>
-            ${extraLine ? `<div class="small">${extraLine}</div>` : ``}
-          </div>
-          <div class="pill ${p.cls}">${p.txt}</div>
+        <div class="decisionBanner ${d.cls}">
+          <div class="decisionText ${d.cls}">${d.txt}</div>
+          <div class="decisionBadge">${d.badge}</div>
         </div>
 
-        <div class="why"><b>Dispose in:</b> ${rule.bin}<br>
-        <span class="small">${rule.why}</span></div>
+        <p class="itemName">Item: ${safeItem}</p>
+        <div class="small">Decision made for on-the-spot disposal (under 10 seconds).</div>
+        ${extraLine ? `<div class="small">${esc(extraLine)}</div>` : ``}
+
+        <div class="why" style="margin-top:10px;">
+          <b>Dispose in:</b> ${esc(rule.bin)}<br>
+          <span class="small">${esc(rule.why)}</span>
+        </div>
 
         <div style="margin-top:10px;"><b>Contamination tips:</b></div>
         <ul>${tips}</ul>
@@ -515,19 +697,19 @@
     }
 
     function renderUnknown(item, extraLine = ""){
-      const safeItem = (item || "").replace(/[<>]/g, "");
+      const safeItem = esc(item);
       resultEl.classList.add("show");
       resultEl.innerHTML = `
-        <div class="resultTop">
-          <div>
-            <p class="itemName">Item: ${safeItem}</p>
-            <div class="small">Not in our quick list yet.</div>
-            ${extraLine ? `<div class="small">${extraLine}</div>` : ``}
-          </div>
-          <div class="pill warn">⚠️ Not sure</div>
+        <div class="decisionBanner warn">
+          <div class="decisionText warn">⚠️ NOT SURE</div>
+          <div class="decisionBadge">Avoid contamination</div>
         </div>
 
-        <div class="why">
+        <p class="itemName">Item: ${safeItem}</p>
+        <div class="small">Not in our quick list yet.</div>
+        ${extraLine ? `<div class="small">${esc(extraLine)}</div>` : ``}
+
+        <div class="why" style="margin-top:10px;">
           <b>Quick safe rule:</b> If it’s <b>clean and dry</b> (paper, cans, bottles, cardboard), it’s usually recyclable.
           If it’s <b>dirty, wet, or food-stained</b>, use <b>General Waste</b> to avoid contamination.
         </div>
@@ -578,15 +760,9 @@
     window.addEventListener("load", () => input.focus());
 
     // =========================
-    // 2) PHOTO UPLOAD (simple) + OPTIONAL AI
+    // 2) PHOTO UPLOAD + OPTIONAL AI
     // =========================
-
-    // If you want REAL photo identification (still simple, no backend):
-    //  - Use Teachable Machine -> Image Project
-    //  - Train classes: Plastic Bottle, Aluminium Can, Paper/Cardboard, Glass, Battery, Tissue, Others
-    //  - Export TensorFlow.js model
-    //  - Paste the model folder URL below (must end with "/")
-    const TM_URL = "https://teachablemachine.withgoogle.com/models/lad93rVUN/"; // e.g. "https://teachablemachine.withgoogle.com/models/XXXXX/"
+    const TM_URL = "https://teachablemachine.withgoogle.com/models/lad93rVUN/"; // keep yours
 
     const photoInput = document.getElementById("photoInput");
     const photoCheckBtn = document.getElementById("photoCheckBtn");
@@ -594,6 +770,7 @@
     const previewWrap = document.getElementById("previewWrap");
     const previewImg = document.getElementById("previewImg");
     const photoStatus = document.getElementById("photoStatus");
+    const fileMeta = document.getElementById("fileMeta");
 
     let tmModel = null;
     let lastObjectURL = null;
@@ -607,6 +784,7 @@
       if (lastObjectURL) URL.revokeObjectURL(lastObjectURL);
       lastObjectURL = null;
       setPhotoStatus("No photo selected.");
+      fileMeta.textContent = "No photo selected.";
     }
 
     async function loadTM(){
@@ -619,8 +797,6 @@
     }
 
     function mapTMLabelToTextQuery(label){
-      // Map your Teachable Machine class names to our text-rule keywords
-      // (Make sure your TM classes match these names, or edit them here.)
       const m = {
         "Plastic Bottle": "plastic bottle",
         "Aluminium Can": "aluminium can",
@@ -631,6 +807,7 @@
         "Battery": "battery",
         "Tissue": "tissue",
         "Plastic Bag": "plastic bag",
+        "Plastic Straw": "plastic straw",
         "Others": "others"
       };
       return m[label] || label.toLowerCase();
@@ -639,13 +816,12 @@
     async function identifyPhoto(){
       const file = photoInput.files && photoInput.files[0];
       if (!file){
-        setPhotoStatus("Please choose a photo first.");
+        setPhotoStatus("Please take/upload a photo first.");
         return;
       }
 
-      // If no AI configured, we can’t truly “identify” automatically.
       if (!TM_URL){
-        setPhotoStatus("AI model not configured. Use the text checker above, or set TM_URL for photo identification.");
+        setPhotoStatus("AI model not configured. Use the text checker above, or set TM_URL.");
         renderUnknown("Uploaded photo", "Tip: Configure Teachable Machine model to auto-identify photos.");
         return;
       }
@@ -666,7 +842,7 @@
         const rule = matchRule(query);
 
         if (rule){
-          renderResult(label, rule, `Photo AI confidence: ${conf}% • Confirm using your judgment.`);
+          renderResult(label, rule, `Photo AI confidence: ${conf}% • Please confirm.`);
         } else {
           renderUnknown(label, `Photo AI confidence: ${conf}% • If unsure, use General Waste to avoid contamination.`);
         }
@@ -689,17 +865,173 @@
       previewImg.src = lastObjectURL;
       previewWrap.classList.add("show");
       setPhotoStatus("Photo ready. Click “Identify photo”.");
+      fileMeta.textContent = `Selected: ${file.name}`;
     });
 
     photoCheckBtn.addEventListener("click", identifyPhoto);
     photoClearBtn.addEventListener("click", clearPhoto);
+
+    // =========================
+    // 3) COMMUNITY FORUM (DEMO - localStorage only)
+    // =========================
+    const forumType = document.getElementById("forumType");
+    const forumName = document.getElementById("forumName");
+    const forumMsg  = document.getElementById("forumMsg");
+    const postBtn   = document.getElementById("postBtn");
+    const clearPostsBtn = document.getElementById("clearPostsBtn");
+    const forumList = document.getElementById("forumList");
+
+    const FORUM_KEY = "rr_forum_posts_v1";
+
+    function loadPosts(){
+      try { return JSON.parse(localStorage.getItem(FORUM_KEY) || "[]"); }
+      catch { return []; }
+    }
+    function savePosts(posts){
+      localStorage.setItem(FORUM_KEY, JSON.stringify(posts));
+    }
+    function fmtTime(ts){
+      const d = new Date(ts);
+      return d.toLocaleString();
+    }
+    function renderPosts(){
+      const posts = loadPosts().slice().reverse(); // newest first
+      forumList.innerHTML = posts.length ? "" : `<div class="small">No posts yet. Be the first!</div>`;
+      for (const p of posts){
+        const tClass = p.type === "complaint" ? "tagComplain" : "tagChat";
+        const tText  = p.type === "complaint" ? "Complaint" : "Chat";
+        const name = (p.name || "Anonymous").slice(0,20);
+        forumList.insertAdjacentHTML("beforeend", `
+          <div class="post">
+            <div class="postTop">
+              <div class="tagPill ${tClass}">${tText}</div>
+              <div class="postMeta">${name} • ${fmtTime(p.ts)}</div>
+            </div>
+            <div class="postMsg">${esc(p.msg)}</div>
+          </div>
+        `);
+      }
+    }
+
+    postBtn.addEventListener("click", () => {
+      const msg = (forumMsg.value || "").trim();
+      if (!msg) return;
+
+      const posts = loadPosts();
+      posts.push({
+        type: forumType.value,
+        name: (forumName.value || "").trim(),
+        msg,
+        ts: Date.now()
+      });
+      savePosts(posts);
+
+      forumMsg.value = "";
+      renderPosts();
+    });
+
+    clearPostsBtn.addEventListener("click", () => {
+      localStorage.removeItem(FORUM_KEY);
+      renderPosts();
+    });
+
+    renderPosts();
+
+    // =========================
+    // 4) BIN LOCATOR (ROUGH ESTIMATE - DEMO)
+    // =========================
+    const postalInput = document.getElementById("postalInput");
+    const postalBtn = document.getElementById("postalBtn");
+    const binOut = document.getElementById("binOut");
+
+    // tiny sample dataset (demo)
+    const SAMPLE_BINS = [
+      { name:"Tampines Hub (Blue Bin area)", postal:"529684" },
+      { name:"Bedok MRT / Interchange area", postal:"465761" },
+      { name:"Jurong East MRT area", postal:"609732" },
+      { name:"Woodlands MRT area", postal:"738099" },
+      { name:"Punggol MRT area", postal:"828868" },
+      { name:"Bishan MRT area", postal:"579837" },
+      { name:"Ang Mo Kio Hub area", postal:"569933" },
+      { name:"Clementi MRT area", postal:"129542" },
+      { name:"Toa Payoh MRT area", postal:"319764" },
+      { name:"HarbourFront MRT area", postal:"098585" }
+    ];
+
+    function regionFromPostal(p){
+      const n = parseInt(p.slice(0,2), 10);
+      if (isNaN(n)) return "Unknown";
+      if (n >= 1 && n <= 8) return "Central / City";
+      if (n >= 9 && n <= 14) return "Central / South";
+      if (n >= 15 && n <= 18) return "West";
+      if (n >= 19 && n <= 28) return "West / Central";
+      if (n >= 29 && n <= 38) return "Central";
+      if (n >= 39 && n <= 48) return "East";
+      if (n >= 49 && n <= 54) return "East / North-East";
+      if (n >= 55 && n <= 59) return "North-East";
+      if (n >= 60 && n <= 64) return "West";
+      if (n >= 65 && n <= 73) return "North";
+      if (n >= 74 && n <= 82) return "North / North-East";
+      return "Unknown";
+    }
+
+    function estimateCount(region){
+      // totally rough demo numbers
+      const map = {
+        "Central / City": 8,
+        "Central / South": 7,
+        "Central": 7,
+        "East": 6,
+        "East / North-East": 6,
+        "North-East": 6,
+        "West": 6,
+        "West / Central": 6,
+        "North": 5,
+        "North / North-East": 5,
+        "Unknown": 4
+      };
+      return map[region] ?? 4;
+    }
+
+    function findNearestSamples(postal){
+      const target = parseInt(postal, 10);
+      const ranked = SAMPLE_BINS
+        .map(b => ({...b, diff: Math.abs(parseInt(b.postal,10) - target)}))
+        .sort((a,b) => a.diff - b.diff)
+        .slice(0,3);
+      return ranked;
+    }
+
+    function showBins(){
+      const p = (postalInput.value || "").trim();
+      if (!/^\d{6}$/.test(p)){
+        binOut.classList.add("show");
+        binOut.innerHTML = `<b>Invalid postal code.</b><div class="small">Please enter 6 digits (e.g. 520123).</div>`;
+        return;
+      }
+
+      const region = regionFromPostal(p);
+      const count = estimateCount(region);
+      const nearest = findNearestSamples(p);
+
+      binOut.classList.add("show");
+      binOut.innerHTML = `
+        <b>Estimate for ${p}</b>
+        <div class="small">Region: <b>${region}</b> • Approx bins nearby: <b>~${count}</b> (demo estimate)</div>
+        <div style="margin-top:10px;"><b>Nearest examples (demo):</b></div>
+        <ul>
+          ${nearest.map(n => `<li>${esc(n.name)} (${n.postal})</li>`).join("")}
+        </ul>
+        <div class="small" style="margin-top:8px;">
+          Note: This is a rough demo (no live map/API). For a real version, connect to an official dataset + map.
+        </div>
+      `;
+    }
+
+    postalBtn.addEventListener("click", showBins);
+    postalInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") showBins();
+    });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
