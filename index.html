@@ -717,18 +717,22 @@
       const nq = normalize(q);
       if (!nq) return null;
 
-      // If user types a product name, assume they mean the container/bottle
+      // If user types a product name, assume they mean the container/bottle (ONLY ONCE)
       const productToContainer = [
         "shampoo", "conditioner", "body wash", "shower gel",
         "detergent", "fabric softener", "dish soap", "cleaner"
       ];
       
       for (const p of productToContainer){
-        if (nq === p || nq.includes(p)){
-          // help the matcher by appending "bottle"
+        const isExact = nq === p;
+        const alreadyHasContainerWord =
+          nq.includes("bottle") || nq.includes("container") || nq.includes("packaging");
+      
+        if (isExact && !alreadyHasContainerWord){
           return matchRule(nq + " bottle");
         }
       }
+
 
 
       for (const r of RULES){
@@ -1136,6 +1140,7 @@
   </script>
 </body>
 </html>
+
 
 
 
