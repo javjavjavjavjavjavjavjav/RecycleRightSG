@@ -717,6 +717,20 @@
       const nq = normalize(q);
       if (!nq) return null;
 
+      // If user types a product name, assume they mean the container/bottle
+      const productToContainer = [
+        "shampoo", "conditioner", "body wash", "shower gel",
+        "detergent", "fabric softener", "dish soap", "cleaner"
+      ];
+      
+      for (const p of productToContainer){
+        if (nq === p || nq.includes(p)){
+          // help the matcher by appending "bottle"
+          return matchRule(nq + " bottle");
+        }
+      }
+
+
       for (const r of RULES){
         for (const k of r.keys){
           if (nq.includes(k)) return r;
@@ -1122,6 +1136,7 @@
   </script>
 </body>
 </html>
+
 
 
 
