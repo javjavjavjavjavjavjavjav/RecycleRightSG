@@ -525,129 +525,182 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 
-  <script>
+<script>
+  const RULES = [
     // =========================
-    // 1) TEXT-BASED RULES (no backend)
+    // BLUE BIN (IF CLEAN)
     // =========================
-    const RULES = [
-      // Recyclables
-      {
-        keys: ["plastic bottle", "pet bottle", "water bottle", "drink bottle"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Clean plastic bottles are recyclable.",
-        tips: ["Empty and rinse.", "No food/liquid inside.", "If very dirty, use General Waste."]
-      },
-      {
-        keys: ["aluminium can", "aluminum can", "can", "soda can", "beer can"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Clean metal cans are recyclable.",
-        tips: ["Empty and rinse.", "Crush if possible (optional).", "If oily/dirty, use General Waste."]
-      },
-      {
-        keys: ["paper", "newspaper", "worksheet", "book", "magazine"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Clean, dry paper is recyclable.",
-        tips: ["Keep it dry.", "No food-stained paper.", "Remove plastic covers if possible."]
-      },
-      {
-        keys: ["cardboard", "box", "carton box", "shipping box"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Clean, dry cardboard is recyclable.",
-        tips: ["Flatten boxes.", "Keep it dry.", "Dirty parts go General Waste."]
-      },
-      {
-        keys: ["glass", "glass bottle", "glass jar"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Glass bottles/jars are recyclable when clean.",
-        tips: ["Empty and rinse.", "No ceramics/mirrors.", "If broken, wrap and dispose safely (General Waste)."]
-      },
-      {
-        keys: ["milk carton", "drink carton", "tetra pak", "tetrapak", "juice carton"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Beverage cartons can be recycled if emptied and rinsed.",
-        tips: ["Empty and rinse.", "Flatten if possible.", "If heavily contaminated, use General Waste."]
-      },
-      {
-        keys: ["food container (clean)", "clean container", "rinsed container", "takeaway container (clean)", "plastic container (clean)"],
-        decision: "RECYCLE",
-        bin: "Recycling (Blue Bin)",
-        why: "Clean rigid plastic containers are usually recyclable.",
-        tips: ["Empty and rinse fully.", "If oily/greasy, use General Waste.", "Remove leftover food."]
-      },
+    {
+      keys: ["plastic bottle", "pet bottle", "water bottle", "drink bottle", "milk bottle", "soft drink bottle"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Plastic bottles can be recycled if emptied and rinsed.",
+      tips: ["Empty contents.", "Rinse quickly.", "If contaminated with food/oil and cannot be cleaned, use General Waste."]
+    },
+    {
+      keys: ["shampoo bottle", "bodywash bottle", "soap bottle", "detergent bottle", "facial cleanser bottle", "cleaning bottle"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Household plastic bottles (non-food) can be recycled if emptied.",
+      tips: ["Empty contents.", "Rinse if needed.", "Close cap if possible."]
+    },
+    {
+      keys: ["plastic container", "food container (clean)", "takeaway container (clean)", "tupperware", "reusable container"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Rigid plastic containers can be recycled if clean.",
+      tips: ["Empty and rinse fully.", "If greasy/oily and cannot be cleaned, use General Waste.", "Remove leftover food."]
+    },
+    {
+      // NEA shows: Ziplock bags / plastic bags / bubble wraps / plastic film packaging
+      keys: ["ziplock", "ziploc", "zip lock", "plastic bag", "bag", "bubble wrap", "bubblewrap", "plastic film", "magazine wrapper", "film packaging", "fruit box", "bread bag", "plastic packaging"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Plastic bags/film/ziplock and bubble wrap can be recycled if clean.",
+      tips: ["Make sure it is clean and dry.", "If contaminated with food/oil stains, use General Waste.", "Do not include items with foil lining."]
+    },
+    {
+      keys: ["paper", "writing paper", "worksheet", "newspaper", "magazine", "book", "brochure", "flyer", "envelope", "red packet", "namecard", "calendar", "greeting card", "gift wrap", "shredded paper", "receipt", "receipts"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Paper items (including receipts) can be recycled if clean and dry.",
+      tips: ["Keep it clean and dry.", "Remove non-paper parts if possible.", "If food-stained, use General Waste."]
+    },
+    {
+      keys: ["cardboard", "carton box", "shipping box", "paper box", "tissue box", "toilet roll tube", "paper towel tube"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Cardboard boxes and paper tubes/boxes can be recycled if clean.",
+      tips: ["Flatten boxes before recycling.", "Keep it dry.", "If heavily stained, use General Waste."]
+    },
+    {
+      keys: ["egg tray", "egg trays"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Egg trays can be recycled in the blue bin if clean and dry.",
+      tips: ["Ensure it is clean and dry.", "If contaminated with food/liquid, use General Waste."]
+    },
+    {
+      keys: ["drink carton", "beverage carton", "milk carton", "juice carton", "tetra pak", "tetrapak", "drink packet", "juice packet"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Drink cartons can be recycled after emptying and rinsing.",
+      tips: ["Empty, rinse, and flatten before recycling.", "If it cannot be cleaned, use General Waste."]
+    },
+    {
+      keys: ["glass bottle", "beer bottle", "wine bottle", "liquor bottle", "food jar", "jam jar", "sauce bottle", "condiment bottle", "perfume bottle", "cosmetic bottle", "medicine bottle", "supplement bottle"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Glass bottles and jars can be recycled if rinsed and free of contamination.",
+      tips: ["Empty and rinse.", "No ceramics/porcelain.", "If broken, wrap and dispose safely (General Waste)."]
+    },
+    {
+      keys: ["aluminium can", "aluminum can", "metal can", "beverage can", "biscuit tin", "food tin", "metal container"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin)",
+      why: "Metal cans/containers can be recycled if emptied and rinsed when necessary.",
+      tips: ["Empty and rinse when needed.", "Dispose rusty/dirty metals as General Waste.", "Ensure it is completely metal (no mixed materials)."]
+    },
+    {
+      keys: ["aerosol can", "spray can"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin) (only if completely emptied)",
+      why: "Aerosol cans can be recycled only if emptied.",
+      tips: ["Ensure it is fully emptied before recycling.", "If not emptied, do not put in blue bin.", "When unsure, dispose safely as General Waste."]
+    },
+    {
+      keys: ["aluminium foil", "aluminum foil", "aluminium tray", "aluminum tray"],
+      decision: "RECYCLE",
+      bin: "Recycling (Blue Bin) (only if clean)",
+      why: "Clean aluminium foil/trays can be recycled if emptied and rinsed.",
+      tips: ["If clean: empty and rinse before recycling.", "If dirty/oily: General Waste.", "If heavily stained: do not recycle."]
+    },
 
-      // Not recyclable / General waste
-      {
-        keys: ["food", "leftover", "rice", "noodles"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Food waste contaminates recycling.",
-        tips: ["Don’t put food into recycling bins.", "Empty leftovers before recycling containers."]
-      },
-      {
-        keys: ["food container", "dirty container", "greasy container", "oily container", "takeaway container (dirty)"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Dirty or oily containers contaminate recycling.",
-        tips: ["If you can rinse it fully, then recycle.", "If not, use General Waste."]
-      },
-      {
-        keys: ["tissue", "napkin", "wet tissue", "wet wipes", "wipe"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Used tissues and wipes are not recyclable.",
-        tips: ["Tissues are usually contaminated after use.", "Wet wipes are not paper and contaminate recycling."]
-      },
-      {
-        keys: ["plastic bag", "bag"],
-        decision: "GENERAL",
-        bin: "General Waste (unless special collection exists)",
-        why: "Plastic bags jam sorting machines and often contaminate recycling streams.",
-        tips: ["Do not place in blue bins.", "Use special collection only if your area has it."]
-      },
-      {
-        keys: ["plastic straw", "straw"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Straws are small, easily contaminated, and commonly not accepted in mixed recycling.",
-        tips: ["Dispose as General Waste.", "If possible, avoid single-use straws."]
-      },
-      {
-        keys: ["plastic cutlery", "fork", "spoon", "knife"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Small plastic cutlery is often contaminated and not sorted effectively.",
-        tips: ["Dispose as General Waste.", "If reusable, wash and reuse instead."]
-      },
-      {
-        keys: ["styrofoam", "foam", "polystyrene"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Foam items are typically not accepted in mixed recycling.",
-        tips: ["Dispose as General Waste.", "Avoid foam packaging if possible."]
-      },
-      {
-        keys: ["coffee cup", "paper cup", "disposable cup"],
-        decision: "GENERAL",
-        bin: "General Waste",
-        why: "Disposable cups often have plastic lining and liquid contamination.",
-        tips: ["Dispose as General Waste.", "Use a reusable cup when possible."]
-      },
+    // =========================
+    // GENERAL WASTE (NOT BLUE BIN)
+    // =========================
+    {
+      keys: ["food", "leftover", "rice", "noodles", "food waste"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Food waste contaminates recycling streams.",
+      tips: ["Do not put food into recycling bins.", "Empty leftovers before recycling containers."]
+    },
+    {
+      keys: ["food container (dirty)", "dirty container", "greasy container", "oily container", "takeaway container (dirty)", "plastic packaging contaminated", "food/oil stains"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Food/oil contamination prevents recycling.",
+      tips: ["If it cannot be cleaned, use General Waste.", "Rinse thoroughly before recycling next time."]
+    },
+    {
+      keys: ["tissue", "tissues", "paper towel", "paper towels", "toilet paper", "napkin", "wet tissue", "wet wipes", "wipe"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Used tissues/paper towels are often contaminated and not recycled.",
+      tips: ["Dispose as General Waste.", "Keep paper recyclables clean and dry."]
+    },
+    {
+      keys: ["coffee cup", "paper cup", "paper plate", "disposable cup", "disposable food & drink packaging", "paper disposables"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Disposable food/drink packaging is usually contaminated or lined and not recycled.",
+      tips: ["Dispose as General Waste.", "Use reusable cups/containers when possible."]
+    },
+    {
+      keys: ["drinking straw", "straw", "plastic straw"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Drinking straws are not placed in the blue recycling bins.",
+      tips: ["Dispose as General Waste.", "Avoid single-use straws if possible."]
+    },
+    {
+      keys: ["styrofoam", "polystyrene", "foam", "styrofoam cup", "styrofoam clamshell", "packing peanuts", "cooler box"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Styrofoam (polystyrene foam products) is not placed in the blue recycling bins.",
+      tips: ["Dispose as General Waste.", "Avoid foam packaging if possible."]
+    },
+    {
+      keys: ["melamine", "melamine cup", "melamine plate"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Melamine products are not placed in the blue recycling bins.",
+      tips: ["Dispose as General Waste.", "Use reusable alternatives when possible."]
+    },
+    {
+      keys: ["chip bag", "potato chip bag", "foil packaging", "packaging with foil", "blister pack", "empty blister pack"],
+      decision: "GENERAL",
+      bin: "General Waste",
+      why: "Plastic packaging with foil is not placed in the blue recycling bins.",
+      tips: ["Dispose as General Waste.", "When in doubt, avoid contaminating the blue bin."]
+    },
+    {
+      keys: ["wine glass", "drinking glass", "glass cup", "glass plate", "pyrex", "borosilicate", "tempered glass", "crystal", "window", "mirror", "ceramic", "porcelain"],
+      decision: "GENERAL",
+      bin: "General Waste (or donation/e-waste depending on item)",
+      why: "Not all “glass-like” items are accepted in blue recycling bins.",
+      tips: ["Only recycle bottles/jars.", "Mirrors/ceramics/windows are not blue-bin recyclables.", "When unsure, do not contaminate the blue bin."]
+    },
 
-      // Special
-      {
-        keys: ["battery", "batteries", "power bank", "lithium", "aa battery"],
-        decision: "SPECIAL",
-        bin: "Special Disposal (E-waste / Battery Bin)",
-        why: "Batteries are hazardous and must not go into normal bins.",
-        tips: ["Use dedicated battery collection points.", "Do not throw into general waste or recycling."]
-      }
-    ];
+    // =========================
+    // SPECIAL DISPOSAL (E-WASTE)
+    // =========================
+    {
+      keys: ["battery", "batteries", "power bank", "portable charger", "rechargeable battery", "lithium", "aa battery", "alkaline battery", "button cell", "9-volt", "9v"],
+      decision: "SPECIAL",
+      bin: "E-waste / Battery Bin",
+      why: "Batteries can cause fires and should not go into blue bins.",
+      tips: ["Use e-waste/battery collection points.", "Tape ends for 9V/button-cell/rechargeables if possible.", "Seal leaking batteries in a leak-proof bag/container."]
+    },
+    {
+      keys: ["phone", "mobile phone", "tablet", "laptop", "desktop", "router", "modem", "printer", "monitor", "keyboard", "mouse", "hard disk", "electronic waste", "e-waste", "cables", "charger"],
+      decision: "SPECIAL",
+      bin: "E-waste Bin / Collection Point",
+      why: "Electrical/electronic items should be recycled via e-waste collection points.",
+      tips: ["Do not put e-waste into blue bins.", "Use designated e-waste bins or retailer take-back if available."]
+    }
+  ];
 
     const input = document.getElementById("itemInput");
     const checkBtn = document.getElementById("checkBtn");
@@ -1069,6 +1122,7 @@
   </script>
 </body>
 </html>
+
 
 
 
